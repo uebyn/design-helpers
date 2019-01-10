@@ -1,0 +1,20 @@
+@mixin invert-filled-background-for-print($dark: #333, $light: #c7c7c7) {
+  @media print {
+    color: $dark !important;
+    background-color: $light !important;
+  }
+}
+
+@mixin empty-background-for-print($dark: #333) {
+  @media print {
+    color: $dark !important;
+    border: 1px solid $dark !important;
+    background: transparent !important;
+  }
+}
+
+@mixin remove-for-print {
+  @media print {
+    display: none !important;
+  }
+}

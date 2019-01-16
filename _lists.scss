@@ -1,0 +1,147 @@
+/*
+
+======== NOTES BEFORE USING lists() MIXIN =============
+
+PURPOSE
+To ensure you have consistent styling for your lists. You can also import mixins for Japanese asterixes and bullet points lists, which use the correct Japanese symbols for the asterixes & symbols, respectively.
+
+ASSUMPTIONS
+1. Pass in the leading/line-height for the list text, or have a variable is called $leading as a fallback.
+2. Pass in the desired font-size for the list text, or have a variable called $body-text-fontsize as a fallback.
+3. Pass in the minimum number of characters required for the paragraph text, or have a $min-measure-constant variable as a fallback. This will be multiplied by the font size to set the min-width property of the paragraph. This ensures you consider the measure & readability.
+4. Pass in the maximum number of characters required for the paragraph text, or have a $max-measure-constant variable as a fallback. This will be multiplied by the font size to set the max-width property of the paragraph. This ensures you consider the measure & readability.
+5. If using the Japanese lists mixins, pass in the Japanese font family for the list text, or have a variable called $jp-fontfamily as a fallback. This ensures you render the Japanese symbols with Japanese fonts instead of English fonts.
+
+SCOPE
+Include this mixin on the <ul> element, and the default styling will be applied to both the <ul> and the <li>s.
+
+========================================================
+
+*/
+
+
+// -------------------------------------------------------------------------------
+// The base of the other lists mixins (non-language specific):
+// -------------------------------------------------------------------------------
+@mixin common-list($fontsize: $body-text-fontsize, $leading: $leading, $min-characters: $min-measure-constant, $max-characters: $max-measure-constant) {
+  @if (unit($fontsize) == em) {
+    @error '>>> Please refrain from using `em`; compounding can cause unexpected values. Try using `rem` instead.'
+  }
+
+  padding-left: 0; // reset default padding-left value forced upon us by browsers, so we can set our own
+  list-style-position: inside;
+
+  li {
+    min-width: $min-characters * $body-text-fontsize; // minimum number of characters needed to ensure readability
+    max-width: $max-characters * $body-text-fontsize; // maximum number of characters needed to ensure readability
+    margin: $leading 0;
+    line-height: $leading;
+    letter-spacing: get-letter-spacing($body-text-fontsize, $fontsize);
+    font-size: $fontsize;
+
+    &::before {
+      display: inline-block;
+    }
+
+    ol, ul {
+      margin-top: 2 * $leading; // extra spacing to make inner list stand out
+      margin-bottom: 2 * $leading; // extra spacing to make inner list stand out
+    }
+  }
+}
+
+// -------------------------------------------------------------------------------
+// The base of the other lists mixins (JP):
+// -------------------------------------------------------------------------------
+@mixin common-list-jp($fontsize: $body-text-fontsize, $leading: $leading, $min-characters: $min-measure-constant, $max-characters: $max-measure-constant) {
+  @if (unit($fontsize) == em) {
+    @error '>>> Please refrain from using `em`; compounding can cause unexpected values. Try using `rem` instead.'
+  }
+
+  padding-left: 0; // reset default padding-left value forced upon us by browsers, so we can set our own
+  list-style-position: inside;
+
+  li {
+    min-width: $min-characters * $body-text-fontsize; // minimum number of characters needed to ensure readability
+    max-width: $max-characters * $body-text-fontsize; // maximum number of characters needed to ensure readability
+
+    @if ($body-text-fontsize > $fontsize) {
+      letter-spacing: $body-text-fontsize - $fontsize; // if text size of list < standard body text size, adjust letter-spacing so that number of characters per line remains readable
+    } @else {
+      letter-spacing: 0;
+    }
+
+    margin: $leading 0;
+    line-height: $leading;
+    font-size: $fontsize;
+
+    &::before {
+      display: inline-block;
+      margin-right: $fontsize / 2; // 半角空きにする
+    }
+
+    ol, ul {
+      margin-top: 2 * $leading; // extra spacing to make inner list stand out, and give more breathing space
+      margin-bottom: 2 * $leading; // extra spacing to make inner list stand out, and give more breathing space
+      margin-left: 2 * $fontsize; // 全角空き二つにすれば親ーリストとちゃんと揃ってるはず
+    }
+  }
+}
+
+// -------------------------------------------------------------------------------
+// Uses the Japanese asterix in lists, instead of the default
+// -------------------------------------------------------------------------------
+
+@mixin asterix-list--jp($fontsize: $body-text-fontsize, $leading: $leading, $min-characters: $min-measure-constant, $max-characters: $max-measure-constant, $jp-fontfamily: $fontfamily) {
+  @include common-list-jp($fontsize, $leading, $min-characters, $max-characters);
+
+  li {
+    list-style-type: none;
+
+    &::before {
+      font-family: $jp-fontfamily; // ensures we use the global Japanese font-family to render the Japanese asterix; overwrite if necessary
+      content: '※';
+    }
+  }
+}
+
+// -------------------------------------------------------------------------------
+// Uses the Japanese bullet point in lists, instead of the default
+// -------------------------------------------------------------------------------
+
+@mixin unordered-list--jp($fontsize: $body-text-fontsize, $leading: $leading, $min-characters: $min-measure-constant, $max-characters: $max-measure-constant) {
+  @include common-list-jp($fontsize, $leading, $min-characters, $max-characters);
+
+  li {
+    list-style-type: none;
+
+    &::before {
+      content: '・';
+    }
+  }
+}
+
+// -------------------------------------------------------------------------------
+// Allows us to customize styling for  numbers in a list
+// -------------------------------------------------------------------------------
+
+@mixin list--custom-numbering($fontsize: $body-text-fontsize, $leading: $leading, $min-characters: $min-measure-constant, $max-characters: $max-measure-constant) {
+  @include common-list($fontsize, $leading, $min-characters, $max-characters);
+  counter-reset: list;
+
+  li {
+
+    &::before {
+      content: counter(list);
+      counter-increment: list;
+      // =========================================================================
+      // EXAMPLE STYLING OF CUSTOM NUMBERS; STYLE ACCORDINGLY IN YOUR ACTUAL CLASS
+      // =========================================================================
+      // display: inline-block;
+      // padding: 0.25em 0.5em;
+      // border-radius: 50%;
+      // color: $white;
+      // background: $red-brand;
+    }
+  }
+}

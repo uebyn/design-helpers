@@ -1,0 +1,41 @@
+// Warnings:
+@function no-arbitrary-fontsizes() {
+  @return '"Friendly reminder: try using one of the predetermined font sizes in your typography.scss for design consistency. "';
+}
+
+@function convert-px-to-rem($px-val: 16px) {
+  $rem-size: $px-val / 10px; // assumes base font-size on <html> is 62.5%
+  @return $rem-size + 0rem;
+}
+
+@function convert-rem-to-px($rem-val: 1rem) {
+  $px-size: ($rem-val / 1rem) * 16;
+  @return $px-size + 0px;
+}
+
+@function strip-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
+
+  @return $number;
+}
+
+@function get-margin-fontsize-leading($fontsize, $leading) {
+  @return $fontsize * $leading;
+}
+
+@function get-line-height($fontsize) {
+  @if ($fontsize < $leading) {
+    @return $leading / $fontsize;
+  } @else if (($leading * 2) > $fontsize) {
+    @return ($leading * 2) / $fontsize;
+  }
+}
+@function get-letter-spacing($standard-fontsize: $body-text-fontsize, $current-fontsize: $body-text-fontsize) {
+  @if ($standard-fontsize > $current-fontsize) {
+    @return $body-text-fontsize - $current-fontsize; // if text size of list < standard body text size, adjust letter-spacing so that number of characters per line remains readable
+  } @else {
+    @return 0;
+  }
+}

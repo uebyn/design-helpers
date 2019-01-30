@@ -30,12 +30,49 @@
     @return $leading / $fontsize;
   } @else if (($leading * 2) > $fontsize) {
     @return ($leading * 2) / $fontsize;
+  } @else if (($leading * 3) > $fontsize) {
+    @return ($leading * 3) / $fontsize; // assumption: font size probably shouldn't be more than 3x of leading
   }
 }
+
 @function get-letter-spacing($standard-fontsize: $body-text-fontsize, $current-fontsize: $body-text-fontsize) {
   @if ($standard-fontsize > $current-fontsize) {
     @return $body-text-fontsize - $current-fontsize; // if text size of list < standard body text size, adjust letter-spacing so that number of characters per line remains readable
   } @else {
     @return 0;
   }
+}
+
+@function get-width($num-col,
+                    $num-chars,
+                    $num-gutters: $num-col - 1,
+                    $fontsize: $body-text-fontsize) {
+
+  // Basic formula: total width = number of characters * font size of each character * number of columns + number of gutters * width of each gutter
+  $text-width: $num-chars * $fontsize;
+  $columns-width: $num-col * $text-width;
+  $gutters-width: $num-gutters * $gutter;
+
+  @return $columns-width + $gutters-width;
+}
+
+@function get-num-chars($predetermined-width,
+                        $num-col,
+                        $fontsize: $body-text-fontsize) {
+
+  // Basic formula: total width = number of characters * font size of each character * number of columns + number of gutters * width of each gutter
+  $num-gutters: $num-col - 1;
+  $gutters-width: $num-gutters * $gutter;
+  $single-column-width: ($predetermined-width - $gutters-width) / $num-col;
+
+  @return $single-column-width / $fontsize;
+}
+
+@function get-grid-field-height($base-grid-field-height,
+                                $num-grid-fields-stacked: 1) {
+
+  $grid-fields-height: $num-grid-fields-stacked * $base-grid-field-height;
+  $margins-height: ($num-grid-fields-stacked - 1) * $leading; // additional $leading added to account for margin-bottom of grid fields other than last one
+
+  @return $grid-fields-height + $margins-height;
 }

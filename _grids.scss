@@ -1,0 +1,77 @@
+.grid-row {
+  display: flex;
+  align-items: flex-start;
+
+  + .grid-row {
+    margin-top: $leading;
+  }
+}
+
+.grid-col {
+  margin: 0 $gutter 0 0;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  // ================================================================================
+  // 2 Column Grid
+  // ================================================================================
+  // .grid-col__1-of-2 occupies the width of 1 column in a 2 column grid, BUT caps width to ensure readability
+  &__1-of-2 {
+    max-width: get-width(1, $max-chars-per-line);
+  }
+
+  // ================================================================================
+  // 3 Column Grid
+  // ================================================================================
+
+  // .grid-col__2-of-3 occupies the width of 2 columns in a 3 column grid
+  &__2-of-3 {
+    min-width: get-width(2, $standard-chars-per-line);
+  }
+
+  // ================================================================================
+  // 4 Column Grid
+  // ================================================================================
+
+  // .grid-col__1-of-4 occupies the width of 1 column in a 4 column grid
+  &__1-of-4 {
+    min-width: get-width(1, $min-chars-per-line);
+  }
+
+  // .grid-col__2-of-4 occupies the width of 2 columns in a 4 column grid
+  &__2-of-4 {
+    min-width: get-width(2, $min-chars-per-line);
+  }
+
+  // .grid-col__3-of-4 occupies the width of 3 columns in a 4 column grid
+  &__3-of-4 {
+    min-width: get-width(3, $min-chars-per-line);
+
+    @media screen and (min-width: $max-content-width + (2 * $gutter)) {
+      width: $max-inner-content-width;
+    }
+  }
+
+  // ================================================================================
+  // All Grids
+  // ================================================================================
+
+  // .grid-col__2-of-2 occupies the full width in a 2 column grid
+  // .grid-col__3-of-3 occupies the full width in a 3 column grid
+  // .grid-col__4-of-4 occupies the full width in a 4 column grid
+  &__2-of-2,
+  &__3-of-3,
+  &__4-of-4 {
+    width: 100%;
+
+    @media screen and (min-width: $max-content-width + (2 * $gutter)) {
+      width: $max-inner-content-width;
+    }
+  }
+}
+
+[class|='grid-col'] + .grid-col:last-of-type {
+  margin-left: $gutter;
+}

@@ -17,23 +17,35 @@
   // ================================================================================
   // 2 Column Grid
   // ================================================================================
+
   // .grid-col__1-of-2 occupies the width of 1 column in a 2 column grid, BUT caps width to ensure readability
   &__1-of-2 {
-    max-width: get-width(1, $max-chars-per-line);
+    max-width: get-width(2, $max-chars-per-line);
+    width: calc((100% - #{$gutter}) / 2);
   }
 
   // ================================================================================
   // 3 Column Grid
   // ================================================================================
 
+  // .grid-col__1-of-3 occupies the width of 1 column in a 3 column grid
+  &__1-of-3 {
+    min-width: get-width(1, $standard-chars-per-line);
+    width: calc(33.33% - #{$gutter});
+
+    &:last-of-type {
+      width: 33.33%;
+    }
+  }
+
   // .grid-col__2-of-3 occupies the width of 2 columns in a 3 column grid
   &__2-of-3 {
     max-width: get-width(2, $standard-chars-per-line);
     width: calc(66.67% - #{$gutter});
-  }
 
-  &__1-of-3 {
-    width: 33.33%;
+    &:last-of-type {
+      width: 66.67%;
+    }
   }
 
   // ================================================================================
@@ -49,18 +61,14 @@
 
   // .grid-col__2-of-4 occupies the width of 2 columns in a 4 column grid
   &__2-of-4 {
-    min-width: get-width(2, $min-chars-per-line);
-    width: calc(50% - #{$gutter});
-
-    &:last-of-type {
-      width: 50%;
-    }
+    max-width: get-width(2, $max-chars-per-line);
+    width: calc((((100% - (3 * #{$gutter})) / 4) * 2) + #{$gutter});
   }
 
   // .grid-col__3-of-4 occupies the width of 3 columns in a 4 column grid
   &__3-of-4 {
     min-width: get-width(3, $min-chars-per-line);
-    width: calc(75% - #{$gutter});
+    width: calc(((((100% - (3 * #{$gutter})) / 4)) * 3) + (2 * #{$gutter}));
 
     @media screen and (min-width: $max-content-width + (2 * $gutter)) {
       width: $max-inner-content-width;
